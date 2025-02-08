@@ -1,0 +1,184 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		xmlns:li="using:LoadingIndicators.Avalonia"
+        xmlns:vm="using:NetworkManagerApp.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="NetworkManagerApp.Views.MainWindow"
+        x:DataType="vm:MainWindowViewModel"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="NetworkManagerApp">
+
+
+	<ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+		<Border Background="White">
+			<Grid Margin="40">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="1*"/>
+					<ColumnDefinition Width="2.5*"/>
+				</Grid.ColumnDefinitions>
+
+				<Grid.RowDefinitions>
+					<RowDefinition Height="2*"/>
+					<RowDefinition Height="1*"/>
+				</Grid.RowDefinitions>
+				
+				<!-- Interfaces de Rede -->
+				<Border Grid.Column="0" Grid.RowSpan="2">
+					<StackPanel>
+						<TextBlock Text="Interfaces de Rede" FontSize="18" FontWeight="Bold"
+								   Foreground="#383D53" Margin="0,0,0,15" HorizontalAlignment="Center"/>
+						<ListBox ItemsSource="{Binding NetworkInterfaces}"
+								 SelectedItem="{Binding SelectedInterface, Mode=TwoWay}"
+								 BorderBrush="Transparent" Foreground="#E4E7F1"
+								 SelectionMode="Single">
+							<ListBox.ItemTemplate>
+								<DataTemplate>
+									<StackPanel>
+										<TextBlock Text="{Binding Name}" FontSize="14" Foreground="#4A5062"/>
+										<TextBlock Text="{Binding Type}" FontSize="12" Foreground="#4A5062"/>
+									</StackPanel>
+								</DataTemplate>
+							</ListBox.ItemTemplate>
+						</ListBox>
+					</StackPanel>
+				</Border>
+
+				<!-- Detalhes da Interface -->
+				<Border Grid.Column="1" Grid.Row="0" BorderBrush="#4A5062" BorderThickness="1" Margin="40"
+                        CornerRadius="16" Background="#E4E7F1">
+					<StackPanel Margin="15">
+						<TextBlock Text="Detalhes da Interface" FontSize="18" FontWeight="Bold"
+                                   Foreground="#383D53" Margin="0,0,0,15"/>
+						<StackPanel Orientation="Vertical" Spacing="10">
+							<StackPanel Orientation="Horizontal">
+								<TextBlock Text="Nome: " FontWeight="Bold" Width="120" Foreground="#495162"/>
+								<TextBlock Text="{Binding SelectedInterface.Name, FallbackValue='Nenhuma interface selecionada'}"
+                                           Foreground="#33354C"/>
+							</StackPanel>
+							<StackPanel Orientation="Horizontal">
+								<TextBlock Text="Tipo: " FontWeight="Bold" Width="120" Foreground="#495162"/>
+								<TextBlock Text="{Binding SelectedInterface.Type, FallbackValue=''}"
+                                           Foreground="#33354C"/>
+							</StackPanel>
+							<StackPanel Orientation="Horizontal">
+								<TextBlock Text="Status: " FontWeight="Bold" Width="120" Foreground="#495162"/>
+								<TextBlock Text="{Binding SelectedInterface.Status, FallbackValue=''}"
+                                           Foreground="#33354C"/>
+							</StackPanel>
+							<StackPanel Orientation="Horizontal">
+								<TextBlock Text="Endereço MAC: " FontWeight="Bold" Width="120" Foreground="#495162"/>
+								<TextBlock Text="{Binding SelectedInterface.MacAddress, FallbackValue=''}"
+                                           Foreground="#33354C"/>
+							</StackPanel>
+
+							<TextBlock Text="Endereços IP:" FontWeight="Bold" Margin="10,10,0,0" Foreground="#495162"/>
+							
+							<TextBlock Text="IPv4" FontWeight="Bold" Margin="0" Foreground="#495162"/>
+							<ListBox ItemsSource="{Binding SelectedInterface.IPv4Addresses}"
+                                     SelectedItem="{Binding SelectedIPv4Address, Mode=TwoWay}"
+                                     Margin="5" Background="#383D53" Foreground="#33354C" BorderBrush="Transparent">
+								<ListBox.ItemTemplate>
+									<DataTemplate>
+										<TextBlock Text="{Binding Address}" Foreground="#B3B8D1"/>
+									</DataTemplate>
+								</ListBox.ItemTemplate>
+							</ListBox>
+							<TextBlock Text="IPv6" FontWeight="Bold" Margin="0" Foreground="#495162"/>
+							<ListBox ItemsSource="{Binding SelectedInterface.IPv6Addresses}"
+						 
+						   Margin="5" Background="#383D53" Foreground="#33354C" BorderBrush="Transparent">
+								<ListBox.ItemTemplate>
+									<DataTemplate>
+										<TextBlock Text="{Binding}" Foreground="#B3B8D1"/>
+									</DataTemplate>
+								</ListBox.ItemTemplate>
+							</ListBox>
+						</StackPanel>
+					</StackPanel>
+				</Border>
+
+				<!-- Configuração de Rede -->
+				<Border Grid.Column="1" Grid.Row="1" Margin="20">
+					
+					<StackPanel HorizontalAlignment="Center" Spacing="10">
+						
+						<TextBlock Text="Configuração de Rede" FontSize="18" FontWeight="Bold"
+                                   Foreground="#383D53" Margin="0,0,0,15" HorizontalAlignment="Center"/>
+						<Grid>
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="Auto"/>
+								<ColumnDefinition Width="*"/>
+								<ColumnDefinition Width="Auto"/>
+							</Grid.ColumnDefinitions>
+
+							<Grid.RowDefinitions>
+								<RowDefinition Height="Auto"/>
+								<RowDefinition Height="Auto"/>
+								<RowDefinition Height="Auto"/>
+								<RowDefinition Height="Auto"/>
+							</Grid.RowDefinitions>
+
+							<!-- Configuração de IP -->
+							<TextBlock Grid.Row="0" Grid.Column="0" Text="Novo IPv4" FontWeight="Bold" Foreground="#383D53"
+                                       VerticalAlignment="Center" HorizontalAlignment="Right" Margin="10,5,0,5"/>
+							<TextBox Grid.Row="0" Grid.Column="1" Text="{Binding NewIPAddress, Mode=TwoWay}"
+                                     MinWidth="120" Height="30" Background="#757E9A" Foreground="#383D53" BorderBrush="Transparent"
+                                     Margin="10,5"/>
+							<StackPanel Grid.Row="0" Grid.Column="2" Orientation="Horizontal" Spacing="5" Margin="10,10,0,10">
+								<Button Content="Alterar" Command="{Binding SetIPv4Command}" Width="80" Height="30"
+                                        Background="#94D1BA" Foreground="Black" BorderBrush="Transparent" CornerRadius="8"
+                                        HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+								<Button Content="Remover" Command="{Binding RemoveIPv4Command}" Width="80" Height="30"
+                                        Background="#D1B4AB" Foreground="Black" BorderBrush="Transparent" CornerRadius="8"
+                                        HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+								<Button Content="Criar" Command="{Binding AddIPv4Command}" Width="80" Height="30"
+                                        Background="#D1B4AB" Foreground="Black" BorderBrush="Transparent" CornerRadius="8"
+                                        HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+								<Button Content="Auto" Command="{Binding SetAutomaticIPv4Command}" Width="60" Height="30"
+                                        Background="#D0B7CF" Foreground="Black" BorderBrush="Transparent" CornerRadius="8"
+                                        HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+							</StackPanel>
+
+							<!-- Configuração de Gateway -->
+							<TextBlock Grid.Row="1" Grid.Column="0" Text="Gateway" FontWeight="Bold" Foreground="#383D53"
+                                       VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,5,0,5"/>
+							<TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Gateway, Mode=TwoWay}"
+                                     MinWidth="150" Height="30" Background="#757E9A" Foreground="#383D53" BorderBrush="Transparent"
+                                     Margin="10,5"/>
+							<StackPanel Grid.Row="1" Grid.Column="2" Orientation="Horizontal" Spacing="5" Margin="10,10,0,10">
+								<Button Content="Definir" Command="{Binding SetGatewayCommand}" Width="80" Height="30"
+                                        Background="#A0C0D1" Foreground="Black" BorderBrush="Transparent" CornerRadius="8"
+                                        HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+								<Button Content="Auto" Command="{Binding SetAutomaticGatewayCommand}" Width="60" Height="30"
+                                        Background="#D0B7CF" Foreground="Black" BorderBrush="Transparent" CornerRadius="8"
+                                        HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+							</StackPanel>
+
+							<!-- Configuração de DNS -->
+							<TextBlock Grid.Row="2" Grid.Column="0" Text="DNS" FontWeight="Bold" Foreground="#383D53"
+                                       VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,5,0,5"/>
+							<TextBox Grid.Row="2" Grid.Column="1" Text="{Binding DNS, Mode=TwoWay}"
+                                     MinWidth="150" Height="30" Background="#757E9A" Foreground="#383D53" BorderBrush="Transparent"
+                                     Margin="10,5"/>
+							<StackPanel Grid.Row="2" Grid.Column="2" Orientation="Horizontal" Spacing="5" Margin="10,10,0,10">
+								<Button Content="Definir" Command="{Binding SetDNSCommand}" Width="80" Height="30"
+                                        Background="#ABAED1" Foreground="Black" BorderBrush="Transparent" CornerRadius="8"
+                                        HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+								<Button Content="Auto" Command="{Binding SetAutomaticDNSCommand}" Width="60" Height="30"
+                                        Background="#D0B7CF" Foreground="Black" BorderBrush="Transparent" CornerRadius="8"
+                                        HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+							</StackPanel>
+
+							<!-- Mensagem de validação -->
+							<TextBlock Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" Text="{Binding ValidationMessage}"
+                                       Foreground="{Binding MessageColor}" FontSize="14" Margin="10,10,0,0" HorizontalAlignment="Center"/>
+
+						</Grid>
+					</StackPanel>
+				</Border>
+			</Grid>
+		</Border>
+	</ScrollViewer>
+</Window>
